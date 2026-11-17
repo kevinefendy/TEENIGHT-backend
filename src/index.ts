@@ -7,7 +7,7 @@ import express from "express";
 import { pool } from "./config/db";
 import authRoutes from "./routes/auth/auth.route";
 import userRoutes from "./routes/user/user.route";
-
+import collectionRoutes from "./routes/collection/collection.route";
 
 const app = express();
 
@@ -58,7 +58,7 @@ app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
-
+app.use("/api/v1/collections", collectionRoutes);
 
 // Tes koneksi Neon
 app.get("/api/test-db", async (req, res) => {
