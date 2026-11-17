@@ -8,10 +8,11 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    phone VARCHAR(20),
     address TEXT,
+
     role VARCHAR(20) NOT NULL DEFAULT 'customer'
         CHECK (role IN ('admin', 'cashier', 'customer')),
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -32,15 +33,22 @@ CREATE TABLE IF NOT EXISTS collections (
 
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    collection_id INTEGER NOT NULL REFERENCES collections(id),
+
+    collection_id INTEGER NOT NULL
+        REFERENCES collections(id),
+
     name VARCHAR(150) NOT NULL,
     description TEXT,
     price NUMERIC(12,2) NOT NULL CHECK (price >= 0),
+
     order_type VARCHAR(20) NOT NULL
         CHECK (order_type IN ('ready_stock', 'pre_order')),
+
     po_duration_days INTEGER
         CHECK (po_duration_days IS NULL OR po_duration_days > 0),
-    image_url VARCHAR(255),
+
+    image_url TEXT,
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -50,9 +58,13 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS product_variants (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    product_id INTEGER NOT NULL REFERENCES products(id),
+
+    product_id INTEGER NOT NULL
+        REFERENCES products(id),
+
     size VARCHAR(5) NOT NULL
         CHECK (size IN ('S', 'M', 'L', 'XL')),
+
     stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
 
     UNIQUE (product_id, size)
@@ -64,11 +76,17 @@ CREATE TABLE IF NOT EXISTS product_variants (
 
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id),
-    total_price NUMERIC(12,2) NOT NULL CHECK (total_price >= 0),
+
+    user_id INTEGER NOT NULL
+        REFERENCES users(id),
+
+    total_price NUMERIC(12,2) NOT NULL
+        CHECK (total_price >= 0),
+
     shipping_address TEXT NOT NULL,
-    payment_proof_url VARCHAR(255),
+    payment_proof_url TEXT,
     tracking_number VARCHAR(100),
+
     status VARCHAR(20) NOT NULL DEFAULT 'pending'
         CHECK (
             status IN (
@@ -79,6 +97,7 @@ CREATE TABLE IF NOT EXISTS orders (
                 'cancelled'
             )
         ),
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -88,11 +107,15 @@ CREATE TABLE IF NOT EXISTS orders (
 
 CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+
     order_id INTEGER NOT NULL
         REFERENCES orders(id) ON DELETE CASCADE,
+
     product_variant_id INTEGER NOT NULL
         REFERENCES product_variants(id),
+
     quantity INTEGER NOT NULL CHECK (quantity > 0),
+
     price_at_purchase NUMERIC(12,2) NOT NULL
         CHECK (price_at_purchase >= 0)
 );
@@ -109,9 +132,3 @@ ON orders(user_id);
 
 CREATE INDEX IF NOT EXISTS idx_orders_status
 ON orders(status);
-
-CREATE INDEX IF NOT EXISTS idx_order_items_order
-ON order_items(order_id);
-
-CREATE INDEX IF NOT EXISTS idx_order_items_variant
-ON order_items(product_variant_id);
