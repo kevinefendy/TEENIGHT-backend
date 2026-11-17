@@ -10,7 +10,8 @@ import {
 } from "drizzle-orm/mysql-core";
 
 // ==========================================
-// 1. TABEL USERS
+// 1. USERS
+// Menyimpan akun Admin, Kasir, Customer
 // ==========================================
 
 export const users = mysqlTable("users", {
@@ -18,7 +19,9 @@ export const users = mysqlTable("users", {
 
   name: varchar("name", { length: 100 }).notNull(),
 
-  email: varchar("email", { length: 150 }).notNull().unique(),
+  email: varchar("email", { length: 150 })
+    .notNull()
+    .unique(),
 
   password: varchar("password", { length: 255 }).notNull(),
 
@@ -30,13 +33,18 @@ export const users = mysqlTable("users", {
     "admin",
     "cashier",
     "customer",
-  ]).notNull().default("customer"),
+  ])
+    .notNull()
+    .default("customer"),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at")
+    .defaultNow()
+    .notNull(),
 });
 
 // ==========================================
-// 2. TABEL COLLECTIONS
+// 2. COLLECTIONS
+// Menyimpan koleksi produk
 // ==========================================
 
 export const collections = mysqlTable("collections", {
@@ -46,11 +54,14 @@ export const collections = mysqlTable("collections", {
 
   description: text("description"),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at")
+    .defaultNow()
+    .notNull(),
 });
 
 // ==========================================
-// 3. TABEL PRODUCTS
+// 3. PRODUCTS
+// Menyimpan informasi produk
 // ==========================================
 
 export const products = mysqlTable("products", {
@@ -78,11 +89,14 @@ export const products = mysqlTable("products", {
 
   imageUrl: varchar("image_url", { length: 255 }),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at")
+    .defaultNow()
+    .notNull(),
 });
 
 // ==========================================
-// 4. TABEL PRODUCT VARIANTS
+// 4. PRODUCT VARIANTS
+// Menyimpan ukuran, stok, dan kuota produk
 // ==========================================
 
 export const productVariants = mysqlTable("product_variants", {
@@ -99,11 +113,14 @@ export const productVariants = mysqlTable("product_variants", {
     "XL",
   ]).notNull(),
 
-  stock: int("stock").notNull().default(0),
+  stock: int("stock")
+    .notNull()
+    .default(0),
 });
 
 // ==========================================
-// 5. TABEL ORDERS
+// 5. ORDERS
+// Menyimpan pesanan pelanggan
 // ==========================================
 
 export const orders = mysqlTable("orders", {
@@ -134,13 +151,18 @@ export const orders = mysqlTable("orders", {
     "shipped",
     "completed",
     "cancelled",
-  ]).notNull().default("pending"),
+  ])
+    .notNull()
+    .default("pending"),
 
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at")
+    .defaultNow()
+    .notNull(),
 });
 
 // ==========================================
-// 6. TABEL ORDER ITEMS
+// 6. ORDER ITEMS
+// Menyimpan detail produk dalam pesanan
 // ==========================================
 
 export const orderItems = mysqlTable("order_items", {
