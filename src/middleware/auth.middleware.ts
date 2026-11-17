@@ -9,7 +9,6 @@ export const authenticate = (
 ) => {
   const authHeader = req.headers.authorization;
 
-  // Memeriksa header Authorization
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     res.status(401).json({
       success: false,
@@ -21,10 +20,8 @@ export const authenticate = (
   const token = authHeader.slice(7);
 
   try {
-    // Memverifikasi token JWT
     const user = verifyToken(token);
 
-    // Menyimpan informasi user ke request
     req.user = user;
 
     next();
