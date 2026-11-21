@@ -1,6 +1,5 @@
 
 import { Router } from "express";
-
 import {
   getVariantsByProduct,
   createVariant,
@@ -13,29 +12,26 @@ import { authorize } from "../../middleware/role.middleware";
 
 const router = Router();
 
-// Semua endpoint wajib login
 router.use(authenticate);
 
-// Semua role dapat melihat varian produk
-router.get("/product/:productId", getVariantsByProduct);
+// Semua role yang login bisa melihat varian
+router.get("/:productId/variants", getVariantsByProduct);
 
-// Khusus Admin: menambahkan varian
+// Hanya admin yang bisa mengelola varian
 router.post(
-  "/product/:productId",
+  "/:productId/variants",
   authorize("admin"),
   createVariant
 );
 
-// Khusus Admin: mengubah stok atau kuota
 router.patch(
-  "/:id",
+  "/:productId/variants/:variantId",
   authorize("admin"),
   updateVariant
 );
 
-// Khusus Admin: menghapus varian
 router.delete(
-  "/:id",
+  "/:productId/variants/:variantId",
   authorize("admin"),
   deleteVariant
 );

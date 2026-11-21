@@ -1,5 +1,4 @@
-import { authenticate } from "./middleware/auth.middleware";
-import { authorize } from "./middleware/role.middleware";
+
 
 import "dotenv/config";
 import express from "express";
@@ -8,8 +7,11 @@ import { pool } from "./config/db";
 import authRoutes from "./routes/auth/auth.route";
 import userRoutes from "./routes/user/user.route";
 import collectionRoutes from "./routes/collection/collection.route";
-import variantRoutes from "./routes/product-variant/variant.route";
 import productRoutes from "./routes/product/product.route";
+import variantRoutes from "./routes/product-variant/variant.route";
+
+import { authenticate } from "./middleware/auth.middleware";
+import { authorize } from "./middleware/role.middleware";
 
 const app = express();
 
@@ -62,8 +64,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/collections", collectionRoutes);
 app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/product-variants", variantRoutes);
-
+app.use("/api/v1/products", variantRoutes);
 
 // Tes koneksi Neon
 app.get("/api/test-db", async (req, res) => {
